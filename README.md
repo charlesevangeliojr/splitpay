@@ -104,7 +104,7 @@ cargo --version     # cargo 1.7x+
 ## Build
 
 ```bash
-git clone https://github.com/<your-handle>/splitpay
+git clone https://github.com/charlesevangeliojr/splitpay.git
 cd splitpay
 
 # Compile to WASM
