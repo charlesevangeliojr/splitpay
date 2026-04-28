@@ -1,0 +1,139 @@
+.create-split h2 {
+  margin-bottom: 24px;
+  color: #333;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #555;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.participant-input {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.participant-input input {
+  flex: 1;
+}
+
+.remove-btn {
+  background: #ff6b6b;
+  color: white;
+  border: none;
+  width: 40px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: background 0.3s;
+}
+
+.remove-btn:hover {
+  background: #ee5a5a;
+}
+
+.add-btn {
+  width: 100%;
+  padding: 12px;
+  background: #f0f0ff;
+  color: #667eea;
+  border: 2px dashed #667eea;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s;
+}
+
+.add-btn:hover {
+  background: #e0e0ff;
+}
+
+.summary {
+  background: #f8f9fa;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.summary p {
+  font-size: 1.1rem;
+}
+
+.summary strong {
+  color: #667eea;
+  font-size: 1.2rem;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 16px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.submit-btn:hover:not(:disabled) {
+  background: #5a6fd6;
+}
+
+.submit-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.success-message {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.success-message h3 {
+  color: #4caf50;
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+}
+
+.success-message p {
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+}
+
+.create-another-btn {
+  margin-top: 24px;
+  padding: 14px 28px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.create-another-btn:hover {
+  background: #5a6fd6;
+}

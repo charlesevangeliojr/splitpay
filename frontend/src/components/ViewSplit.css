@@ -1,0 +1,148 @@
+.view-split h2 {
+  margin-bottom: 24px;
+  color: #333;
+}
+
+.fetch-form {
+  margin-top: 20px;
+}
+
+.split-details {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.split-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.split-header h3 {
+  font-size: 1.3rem;
+  color: #333;
+}
+
+.status-badge {
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.status-badge.active {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.status-badge.settled {
+  background: #e8f5e9;
+  color: #388e3c;
+}
+
+.info-section {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+}
+
+.info-section p {
+  margin-bottom: 12px;
+  font-size: 1rem;
+}
+
+.info-section p:last-child {
+  margin-bottom: 0;
+}
+
+.participants-section h4 {
+  margin-bottom: 16px;
+  color: #555;
+}
+
+.participant-list {
+  list-style: none;
+}
+
+.participant-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  background: white;
+  border: 2px solid #f0f0f0;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  transition: border-color 0.3s;
+}
+
+.participant-item.paid {
+  border-color: #4caf50;
+  background: #f8fff8;
+}
+
+.participant-address {
+  font-family: monospace;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.payment-status {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.payment-status.paid {
+  color: #4caf50;
+}
+
+.payment-status.unpaid {
+  color: #ff6b6b;
+}
+
+.pay-btn {
+  width: 100%;
+  padding: 16px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-top: 20px;
+  margin-bottom: 12px;
+}
+
+.pay-btn:hover:not(:disabled) {
+  background: #45a049;
+}
+
+.pay-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.back-btn {
+  width: 100%;
+  padding: 12px;
+  background: #f0f0f0;
+  color: #555;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.back-btn:hover {
+  background: #e0e0e0;
+}

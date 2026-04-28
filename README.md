@@ -47,7 +47,7 @@ SplitPay automates group payments using Soroban smart contracts on Stellar:
 |------|-----------|
 | 1 | Smart contract: `create_split`, `pay_share`, `get_split`, `is_settled` |
 | 2 | Contract testing and deployment to testnet |
-| 3 | React Native mobile UI: create split + view status + wallet connect |
+| 3 | React web UI: create split + view status + wallet connect |
 | 4 | Testnet demo: live payment flow, demo video, hackathon submission |
 
 ---
@@ -107,7 +107,8 @@ cargo --version     # cargo 1.7x+
 git clone https://github.com/charlesevangeliojr/splitpay.git
 cd splitpay
 
-# Compile to WASM
+# Build smart contract
+cd contract
 soroban contract build
 # Output: target/wasm32v1-none/release/splitpay.wasm
 ```
@@ -117,6 +118,7 @@ soroban contract build
 ## Test
 
 ```bash
+cd contract
 cargo test
 # Runs unit tests for contract functions
 # Expected output: test result: ok. X passed; 0 failed
@@ -131,12 +133,62 @@ cargo test
 soroban keys generate --global alice --network testnet
 soroban keys fund alice --network testnet
 
-# 2. Deploy the contract
+# 2. Deploy the contract (from contract/ directory)
 soroban contract deploy \
   --wasm target/wasm32v1-none/release/splitpay.wasm \
   --source alice \
   --network testnet
 # Output: CONTRACT_ID (save this)
+```
+
+---
+
+## Frontend
+
+A React web interface is available in the `frontend/` folder:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Features:
+- 🔐 Freighter wallet connection
+- 💸 Create splits with participants
+- 👥 View split status and pay shares
+- ⚡ Real-time payment tracking
+
+Open http://localhost:3000
+
+---
+
+## Project Structure
+
+```
+splitpay/
+├── contract/                 # Soroban smart contract (Rust)
+│   ├── Cargo.toml           # Contract dependencies
+│   ├── Cargo.lock           # Locked versions
+│   └── src/
+│       └── lib.rs           # Smart contract code
+├── frontend/                # React web application
+│   ├── src/
+│   │   ├── components/      # React components
+│   │   │   ├── WalletConnect.jsx
+│   │   │   ├── CreateSplit.jsx
+│   │   │   └── ViewSplit.jsx
+│   │   ├── pages/          # Page components
+│   │   │   └── Landing.jsx # Marketing landing page
+│   │   ├── App.jsx         # Main app with routing
+│   │   ├── main.jsx        # Entry point
+│   │   └── *.css           # Styles
+│   ├── index.html
+│   ├── package.json
+│   └── vite.config.js
+├── .gitignore
+├── README.md
+└── target/                 # Build artifacts (ignored)
 ```
 
 ---
