@@ -1,15 +1,13 @@
 import { Link } from 'react-router-dom'
 import { Wallet, PlusCircle, Users, CheckCircle2 } from 'lucide-react'
+import logo from '../assets/logo.png'
+import heroImg from '../assets/hero-illustration.png'
 import './Landing.css'
 
 function SplitPayLogo() {
   return (
     <span className="brand-wrap">
-      <svg className="logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2.2" />
-        <path d="M8 12H16M12 8V16" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-        <circle cx="12" cy="12" r="3" fill="currentColor" />
-      </svg>
+      <img src={logo} alt="SplitPay Logo" className="logo-img" />
       <span className="logo-text">SplitPay</span>
     </span>
   )
@@ -60,27 +58,37 @@ function Landing() {
       </nav>
 
       <section className="hero">
+        <div className="hero-bg-blobs">
+          <div className="blob b1" />
+          <div className="blob b2" />
+          <div className="blob b3" />
+        </div>
         <div className="page-container hero-content">
-          <span className="eyebrow-badge">Built on Stellar Soroban</span>
-          <h1 className="hero-title">
-            Split Bills Instantly.
-            <br />
-            No Awkward Reminders.
-          </h1>
-          <p className="hero-subtitle">
-            SplitPay automates group expenses using smart contracts — instant XLM payments, transparent tracking,
-            zero trust required.
-          </p>
-          <div className="hero-ctas">
-            <Link to="/app" className="cta-primary">Get Started — Connect Wallet</Link>
-            <a href="#how-it-works" className="cta-secondary">See How It Works</a>
-          </div>
-          <div id="features" className="trust-badges">
-            <span>⚡ Instant Payments</span>
-            <span aria-hidden="true">·</span>
-            <span>🔒 On-chain Tracking</span>
-            <span aria-hidden="true">·</span>
-            <span>💸 Near-zero Fees</span>
+          <div className="hero-text centered">
+            <span className="eyebrow-badge">Powered by Stellar Soroban</span>
+            <h1 className="hero-title">
+              Split Bills <span className="gradient-text">Instantly</span>.
+              <br />
+              No Trust Required.
+            </h1>
+            <p className="hero-subtitle">
+              SplitPay automates group expenses using secure smart contracts. 
+              Real-time XLM payments with verifiable on-chain settlement.
+            </p>
+            <div className="hero-ctas">
+              <Link to="/app" className="cta-primary">Launch App →</Link>
+              <a href="#how-it-works" className="cta-secondary">Explore Features</a>
+            </div>
+
+            <div className="hero-illustration-wrap">
+              <img src={heroImg} alt="SplitPay Dashboard Illustration" className="hero-main-img" />
+            </div>
+
+            <div className="trust-badges centered">
+              <div className="badge"><span>⚡</span> Fast</div>
+              <div className="badge"><span>🔒</span> Secure</div>
+              <div className="badge"><span>💎</span> Zero-Fee</div>
+            </div>
           </div>
         </div>
       </section>

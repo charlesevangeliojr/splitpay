@@ -1,6 +1,24 @@
 import { useEffect, useState } from 'react'
-import { isConnected, getPublicKey } from '@stellar/freighter-api'
+import { isConnected, requestAccess, getPublicKey } from '@stellar/freighter-api'
 import './WalletConnect.css'
+
+// v2.0.0 returns raw values; newer versions return objects. Handle both.
+function extractKey(result) {
+  if (typeof result === 'string' && result.length === 56 && result.startsWith('G')) return result
+  if (result && typeof result === 'object') {
+    const c = result.address || result.publicKey || ''
+    if (typeof c === 'string' && c.length === 56 && c.startsWith('G')) return c
+  }
+  return null
+}
+function extractConnected(result) {
+  if (typeof result === 'boolean') return result
+  if (result && typeof result === 'object') {
+    if ('isConnected' in result) return Boolean(result.isConnected)
+    return true
+  }
+  return false
+}
 
 function WalletConnect({ publicKey, setPublicKey }) {
   const [isFreighterInstalled, setIsFreighterInstalled] = useState(true)
@@ -11,10 +29,11 @@ function WalletConnect({ publicKey, setPublicKey }) {
 
   const checkConnection = async () => {
     try {
-      const connected = await isConnected()
-      if (connected) {
-        const key = await getPublicKey()
-        setPublicKey(key)
+      const connResult = await isConnected()
+      if (extractConnected(connResult)) {
+        let key = extractKey(await requestAccess().catch(() => null))
+        if (!key) key = extractKey(await getPublicKey().catch(() => null))
+        if (key) setPublicKey(key)
       }
     } catch (err) {
       setIsFreighterInstalled(false)
@@ -23,8 +42,18 @@ function WalletConnect({ publicKey, setPublicKey }) {
 
   const connectWallet = async () => {
     try {
-      const key = await getPublicKey()
-      setPublicKey(key)
+      const connResult = await isConnected()
+      if (!extractConnected(connResult)) {
+        setIsFreighterInstalled(false)
+        return
+      }
+      let key = extractKey(await requestAccess().catch(() => null))
+      if (!key) key = extractKey(await getPublicKey().catch(() => null))
+      if (key) {
+        setPublicKey(key)
+      } else {
+        alert('Could not get public key. Please unlock Freighter and approve this site.')
+      }
     } catch (err) {
       alert('Please install Freighter wallet extension')
     }

@@ -1,12 +1,14 @@
 import { useState } from 'react'
+import { api } from '../lib/api'
 import './CreateSplit.css'
 
 function CreateSplit({ publicKey }) {
+  const [label, setLabel] = useState('')
   const [totalAmount, setTotalAmount] = useState('')
   const [participants, setParticipants] = useState([''])
-  const [token, setToken] = useState('')
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState(null)
+  const [error, setError] = useState(null)
 
   const addParticipant = () => {
     setParticipants([...participants, ''])
@@ -27,22 +29,26 @@ function CreateSplit({ publicKey }) {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
-    
-    // TODO: Integrate with Soroban contract
-    console.log({
-      creator: publicKey,
-      totalAmount: parseFloat(totalAmount) * 10000000, // Convert to stroops
-      participants: participants.filter(p => p.trim()),
-      token
-    })
-    
-    setTimeout(() => {
-      setResult({
-        splitId: Math.floor(Math.random() * 1000),
-        amountPerPerson: (parseFloat(totalAmount) / participants.length).toFixed(2)
+    setError(null)
+
+    try {
+      const validParticipants = participants.filter(p => p.trim())
+      const response = await api.createSplit({
+        label: label || `Split #${Date.now()}`,
+        creator: publicKey,
+        total_xlm: parseFloat(totalAmount),
+        participants: validParticipants
       })
+
+      setResult({
+        splitId: response.id,
+        amountPerPerson: response.per_person_xlm.toFixed(2)
+      })
+    } catch (err) {
+      setError(err.message || 'Failed to create split')
+    } finally {
       setLoading(false)
-    }, 1500)
+    }
   }
 
   const sharePerPerson = totalAmount && participants.length > 0
@@ -56,14 +62,26 @@ function CreateSplit({ publicKey }) {
       {result ? (
         <div className="success-message">
           <h3>✅ Split Created!</h3>
-          <p>Split ID: <strong>#{result.splitId}</strong></p>
+          <p>Split ID: <strong>{result.splitId}</strong></p>
           <p>Each person pays: <strong>{result.amountPerPerson} XLM</strong></p>
-          <button onClick={() => setResult(null)} className="create-another-btn">
+          <button onClick={() => { setResult(null); setLabel(''); setTotalAmount(''); setParticipants(['']); }} className="create-another-btn">
             Create Another
           </button>
         </div>
       ) : (
         <form onSubmit={handleSubmit}>
+          {error && <div className="error-message">{error}</div>}
+
+          <div className="form-group">
+            <label>Split Label</label>
+            <input
+              type="text"
+              value={label}
+              onChange={(e) => setLabel(e.target.value)}
+              placeholder="e.g., Dinner with friends"
+            />
+          </div>
+
           <div className="form-group">
             <label>Total Amount (XLM)</label>
             <input
@@ -77,19 +95,19 @@ function CreateSplit({ publicKey }) {
           </div>
 
           <div className="form-group">
-            <label>Participants</label>
+            <label>Participants (Stellar Addresses)</label>
             {participants.map((addr, index) => (
               <div key={index} className="participant-input">
                 <input
                   type="text"
                   value={addr}
                   onChange={(e) => updateParticipant(index, e.target.value)}
-                  placeholder={`Participant ${index + 1} address`}
+                  placeholder={`Participant ${index + 1} address (G...)`}
                   required
                 />
                 {participants.length > 1 && (
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     onClick={() => removeParticipant(index)}
                     className="remove-btn"
                   >
@@ -101,16 +119,6 @@ function CreateSplit({ publicKey }) {
             <button type="button" onClick={addParticipant} className="add-btn">
               + Add Participant
             </button>
-          </div>
-
-          <div className="form-group">
-            <label>Token Contract ID (optional)</label>
-            <input
-              type="text"
-              value={token}
-              onChange={(e) => setToken(e.target.value)}
-              placeholder="Leave empty for native XLM"
-            />
           </div>
 
           <div className="summary">

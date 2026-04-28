@@ -1,0 +1,271 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+.wallet-page {
+  min-height: 100vh;
+  background: #0F172A;
+  color: #FFFFFF;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.wc-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 64px;
+  background: rgba(15, 23, 42, 0.96);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+  z-index: 40;
+}
+
+.wc-nav-brand {
+  text-decoration: none;
+}
+
+.wc-brand-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wc-logo-img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.wc-logo-text {
+  font-size: 22px;
+  font-weight: 800;
+  color: #FFFFFF;
+}
+
+.wc-nav-links {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 34px;
+}
+
+.wc-nav-link {
+  font-size: 15px;
+  font-weight: 500;
+  color: #94A3B8;
+  text-decoration: none;
+}
+
+.wc-nav-link:hover {
+  color: #FFFFFF;
+}
+
+.wc-nav-cta {
+  height: 40px;
+  padding: 0 18px;
+  border: none;
+  border-radius: 999px;
+  background: #3B82F6;
+  color: #FFFFFF;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.wc-nav-cta.active {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.35);
+}
+
+.wc-main {
+  min-height: 100vh;
+  padding-top: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wc-content {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 24px;
+}
+
+.wc-top-icon {
+  color: #3B82F6;
+}
+
+.wc-content h1 {
+  margin: 16px 0 0;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.wc-subtitle {
+  margin: 12px 0 0;
+  color: #94A3B8;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.wc-alert {
+  margin-top: 16px;
+  width: 100%;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  background: rgba(127, 29, 29, 0.35);
+  color: #FCA5A5;
+  border-radius: 12px;
+  font-size: 14px;
+  padding: 10px 12px;
+}
+
+.wc-alert a {
+  color: #FECACA;
+}
+
+.wc-state-label {
+  margin-top: 14px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #93C5FD;
+}
+
+.wc-wallet-card,
+.wc-success-card {
+  margin-top: 12px;
+  width: 100%;
+  padding: 24px;
+  border-radius: 12px;
+  border: 1px solid #334155;
+  background: #1E293B;
+}
+
+.wc-wallet-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  text-align: left;
+}
+
+.wc-wallet-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.wc-freighter-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #2563EB, #60A5FA);
+  color: #FFFFFF;
+  font-weight: 800;
+}
+
+.wc-wallet-left h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.wc-wallet-left p {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: #94A3B8;
+}
+
+.wc-connect-btn,
+.wc-continue-btn {
+  border: none;
+  text-decoration: none;
+  background: #3B82F6;
+  color: #FFFFFF;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  height: 36px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.wc-connect-btn:disabled {
+  background: #475569;
+  cursor: not-allowed;
+}
+
+.wc-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #FFFFFF;
+  border-radius: 50%;
+  animation: wc-spin 0.8s linear infinite;
+}
+
+.wc-success-card {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.wc-success-card svg {
+  color: #22C55E;
+}
+
+.wc-success-card h2 {
+  margin: 0;
+  color: #86EFAC;
+  font-size: 22px;
+}
+
+.wc-address-pill {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+  color: #BFDBFE;
+  border: 1px solid #3B82F6;
+  border-radius: 999px;
+  padding: 6px 12px;
+}
+
+.wc-trust-items {
+  margin-top: 16px;
+  color: #CBD5E1;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wc-bottom-note {
+  margin-top: 18px;
+  font-size: 12px;
+  color: #94A3B8;
+}
+
+.wc-bottom-note a {
+  color: #93C5FD;
+}
+
+@keyframes wc-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

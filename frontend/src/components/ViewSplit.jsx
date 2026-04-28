@@ -1,47 +1,79 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { api } from '../lib/api'
 import './ViewSplit.css'
 
 function ViewSplit({ publicKey }) {
-  const [splitId, setSplitId] = useState('')
+  const [splits, setSplits] = useState([])
+  const [selectedSplit, setSelectedSplit] = useState(null)
   const [splitData, setSplitData] = useState(null)
   const [loading, setLoading] = useState(false)
   const [payLoading, setPayLoading] = useState(false)
+  const [error, setError] = useState(null)
 
-  const fetchSplit = async (e) => {
-    e.preventDefault()
+  useEffect(() => {
+    loadSplits()
+  }, [])
+
+  const loadSplits = async () => {
     setLoading(true)
-    
-    // TODO: Integrate with Soroban contract
-    // Mock data for now
-    setTimeout(() => {
-      setSplitData({
-        splitId: parseInt(splitId),
-        creator: 'GCMXJL4PURZ56QKTA4WD4CJ2N3NSJW6PJK65GE2GV2DYINPFXZQNQ5CE',
-        totalAmount: 400,
-        amountPerPerson: 100,
-        participants: [
-          { address: 'GCMXJL4PURZ56QKTA4WD4CJ2N3NSJW6PJK65GE2GV2DYINPFXZQNQ5CE', paid: true },
-          { address: 'GBOB...XYZ', paid: false },
-          { address: 'GALICE...ABC', paid: false },
-        ],
-        token: 'Native XLM',
-        status: 'Active',
-        isSettled: false
-      })
+    setError(null)
+    try {
+      const data = await api.getSplits()
+      setSplits(data)
+    } catch (err) {
+      setError(err.message || 'Failed to load splits')
+    } finally {
       setLoading(false)
-    }, 1000)
+    }
+  }
+
+  const viewSplit = (split) => {
+    setSelectedSplit(split.id)
+    setSplitData({
+      splitId: split.id,
+      creator: split.creator,
+      totalAmount: split.total_xlm,
+      amountPerPerson: split.per_person_xlm,
+      participants: split.participants.map(p => ({
+        address: p.address,
+        paid: p.paid,
+        paidAt: p.paid_at
+      })),
+      token: 'Native XLM',
+      status: split.status,
+      isSettled: split.status === 'SETTLED',
+      label: split.label
+    })
   }
 
   const payShare = async () => {
+    if (!splitData) return
     setPayLoading(true)
-    
-    // TODO: Integrate with Soroban contract
-    console.log('Paying share for split:', splitId)
-    
-    setTimeout(() => {
+    setError(null)
+
+    try {
+      await api.payShare(splitData.splitId, publicKey)
+      // Refresh split data after payment
+      const updatedSplit = {
+        ...splitData,
+        participants: splitData.participants.map(p =>
+          p.address === publicKey ? { ...p, paid: true } : p
+        )
+      }
+      // Check if all paid
+      const allPaid = updatedSplit.participants.every(p => p.paid)
+      if (allPaid) {
+        updatedSplit.status = 'SETTLED'
+        updatedSplit.isSettled = true
+      }
+      setSplitData(updatedSplit)
+      // Refresh the splits list
+      await loadSplits()
+    } catch (err) {
+      setError(err.message || 'Failed to process payment')
+    } finally {
       setPayLoading(false)
-      alert('Payment submitted! (This is a mock - integrate with contract)')
-    }, 2000)
+    }
   }
 
   const isParticipant = (addr) => {
@@ -56,28 +88,50 @@ function ViewSplit({ publicKey }) {
 
   return (
     <div className="view-split">
-      <h2>View Split</h2>
-      
+      <h2>My Splits</h2>
+
+      {error && <div className="error-message">{error}</div>}
+
       {!splitData ? (
-        <form onSubmit={fetchSplit} className="fetch-form">
-          <div className="form-group">
-            <label>Split ID</label>
-            <input
-              type="number"
-              value={splitId}
-              onChange={(e) => setSplitId(e.target.value)}
-              placeholder="Enter split ID"
-              required
-            />
-          </div>
-          <button type="submit" className="submit-btn" disabled={loading}>
-            {loading ? 'Loading...' : 'View Split'}
-          </button>
-        </form>
+        <div className="splits-list">
+          {loading ? (
+            <p>Loading splits...</p>
+          ) : splits.length === 0 ? (
+            <div className="empty-state">
+              <p>No splits found.</p>
+              <p>Create a new split to get started!</p>
+            </div>
+          ) : (
+            <>
+              {splits.map((split) => (
+                <div
+                  key={split.id}
+                  className={`split-card ${split.status.toLowerCase()}`}
+                  onClick={() => viewSplit(split)}
+                >
+                  <div className="split-card-header">
+                    <h4>{split.label || split.id}</h4>
+                    <span className={`status-badge ${split.status.toLowerCase()}`}>
+                      {split.status}
+                    </span>
+                  </div>
+                  <div className="split-card-body">
+                    <p><strong>Total:</strong> {split.total_xlm} XLM</p>
+                    <p><strong>Per person:</strong> {split.per_person_xlm.toFixed(2)} XLM</p>
+                    <p><strong>Participants:</strong> {split.participants.length}</p>
+                  </div>
+                </div>
+              ))}
+              <button onClick={loadSplits} className="refresh-btn" disabled={loading}>
+                {loading ? 'Refreshing...' : 'Refresh'}
+              </button>
+            </>
+          )}
+        </div>
       ) : (
         <div className="split-details">
           <div className="split-header">
-            <h3>Split #{splitData.splitId}</h3>
+            <h3>{splitData.label || splitData.splitId}</h3>
             <span className={`status-badge ${splitData.isSettled ? 'settled' : 'active'}`}>
               {splitData.status}
             </span>
@@ -107,8 +161,8 @@ function ViewSplit({ publicKey }) {
           </div>
 
           {isParticipant(publicKey) && !hasPaid() && splitData.status === 'Active' && (
-            <button 
-              onClick={payShare} 
+            <button
+              onClick={payShare}
               className="pay-btn"
               disabled={payLoading}
             >
@@ -117,7 +171,7 @@ function ViewSplit({ publicKey }) {
           )}
 
           <button onClick={() => setSplitData(null)} className="back-btn">
-            View Another Split
+            Back to Splits
           </button>
         </div>
       )}

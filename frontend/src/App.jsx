@@ -1,55 +1,51 @@
-import { useState } from 'react'
-import { Routes, Route, NavLink, Navigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Routes, Route } from 'react-router-dom'
 import Landing from './pages/Landing'
-import WalletConnect from './components/WalletConnect'
-import CreateSplit from './components/CreateSplit'
-import ViewSplit from './components/ViewSplit'
-import './App.css'
+import WalletConnectionPage from './pages/WalletConnectionPage'
+import Dashboard from './pages/Dashboard'
+import { api } from './lib/api'
 
 function AppDashboard() {
-  const [publicKey, setPublicKey] = useState(null)
+  const [publicKey, setPublicKey] = useState(() => {
+    const saved = localStorage.getItem('splitpay_public_key')
+    // Reject mock or invalid wallet addresses
+    if (saved && saved.startsWith('G') && saved.length === 56 && !saved.includes('MOCK')) {
+      return saved
+    }
+    localStorage.removeItem('splitpay_public_key')
+    return null
+  })
+
+  useEffect(() => {
+    if (publicKey) {
+      localStorage.setItem('splitpay_public_key', publicKey)
+      api.connectWallet(publicKey).catch((error) => {
+        console.error('Failed to sync wallet session:', error)
+      })
+    } else {
+      localStorage.removeItem('splitpay_public_key')
+    }
+  }, [publicKey])
+
+  const handleDisconnect = async () => {
+    if (publicKey) {
+      try {
+        await api.disconnectWallet(publicKey)
+      } catch (error) {
+        console.error('Failed to disconnect backend session:', error)
+      }
+    }
+    setPublicKey(null)
+  }
 
   return (
-    <div className="app">
-      <header className="app-header">
-        <h1>💸 SplitPay</h1>
-        <p>Split bills instantly with friends</p>
-        <WalletConnect publicKey={publicKey} setPublicKey={setPublicKey} />
-      </header>
-
+    <>
       {publicKey ? (
-        <main className="app-main">
-          <nav className="nav-links">
-            <NavLink 
-              to="/app/create" 
-              className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
-            >
-              Create Split
-            </NavLink>
-            <NavLink 
-              to="/app/view" 
-              className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
-            >
-              View Split
-            </NavLink>
-          </nav>
-
-          <Routes>
-            <Route path="/" element={<Navigate to="/app/create" replace />} />
-            <Route path="/create" element={<CreateSplit publicKey={publicKey} />} />
-            <Route path="/view" element={<ViewSplit publicKey={publicKey} />} />
-          </Routes>
-        </main>
+        <Dashboard publicKey={publicKey} onDisconnect={handleDisconnect} />
       ) : (
-        <div className="connect-prompt">
-          <p>Please connect your wallet to use SplitPay</p>
-        </div>
+        <WalletConnectionPage onConnected={setPublicKey} />
       )}
-
-      <footer className="app-footer">
-        <p>Built on Stellar Soroban</p>
-      </footer>
-    </div>
+    </>
   )
 }
 
