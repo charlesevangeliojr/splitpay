@@ -270,6 +270,18 @@ $env:SPLITPAY_BACKEND_PORT="8080"
 cargo run
 ```
 
+### Alternatively: Use .env file
+For a more permanent configuration, create a file named `.env` in the `backend/` directory:
+
+```env
+SPLITPAY_CONTRACT_ID="<YOUR_DEPLOYED_CONTRACT_ID>"
+SPLITPAY_RPC_URL="https://soroban-testnet.stellar.org"
+SPLITPAY_NETWORK_PASSPHRASE="Test SDF Network ; September 2015"
+SPLITPAY_BACKEND_PORT="8080"
+```
+
+The backend will automatically load these variables on startup.
+
 Expected startup log:
 
 ```text
